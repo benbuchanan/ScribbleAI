@@ -13,7 +13,7 @@ struct ScribbleAIApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(prompt: "")
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

@@ -7,82 +7,81 @@
 
 import SwiftUI
 import CoreData
+import Foundation
+import Replicate
+import AnyCodable
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
+    
+    @State var prompt: String
+    @State var imageURL: String = ""
 
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
+        VStack {
+            Spacer()
+            
+            TextField("Enter prompt", text: $prompt, axis: .vertical)
+                .padding()
+                .padding(.horizontal, 20)
+                .font(.headline)
+                .textFieldStyle(.roundedBorder)
+            Button {
+                Task {
+                    do {
+                        try await runModel(prompt: self.prompt)
+                    } catch {
+                        print("Error running model")
                     }
                 }
-                .onDelete(perform: deleteItems)
+            } label: {
+                Text("Run model")
+                  .padding()
+                  .foregroundColor(.white)
+                  .background(Color.blue)
+                  .cornerRadius(10)
+              }
+            
+            Spacer()
+            
+            AsyncImage(url: URL(string: self.imageURL)) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+            } placeholder: {
+                Color.purple.opacity(0.1)
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-            Text("Select an item")
+            .frame(width: 300, height: 500)
+            
+            Spacer()
         }
     }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
+    
+    @MainActor func updateImageURL(newImageURL: String) {
+        print("new URL is: \(newImageURL)")
+        self.imageURL = newImageURL
     }
+    
+    //TODO: pull token from secrets store (GitHub)
+    let client = Client(token: "")
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+    func runModel(prompt: String) async throws {
+        print("Running model")
+        let model = try await client.getModel("stability-ai/stable-diffusion")
+        if let latestVersion = model.latestVersion {
+            let prediction = try await client.createPrediction(version: latestVersion.id, input: ["prompt": "\(prompt)"], wait: true)
+            
+            let decoder = JSONDecoder()
+            let outputString = try? decoder.decode([String].self, from: String(describing: prediction.output!).data(using: .utf8)!)
+            
+            print(outputString?[0] ?? "Error getting output string")
+            
+            await updateImageURL(newImageURL: outputString?[0] ?? "")
         }
     }
 }
 
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        ContentView(prompt: "").environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

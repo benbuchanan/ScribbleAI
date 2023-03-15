@@ -13,6 +13,8 @@
 		8804FD0829C1075900C854C9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8804FD0729C1075800C854C9 /* Preview Assets.xcassets */; };
 		8804FD0A29C1075900C854C9 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8804FD0929C1075900C854C9 /* Persistence.swift */; };
 		8804FD0D29C1075900C854C9 /* ScribbleAI.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8804FD0B29C1075900C854C9 /* ScribbleAI.xcdatamodeld */; };
+		8804FD1629C1079400C854C9 /* Replicate in Frameworks */ = {isa = PBXBuildFile; productRef = 8804FD1529C1079400C854C9 /* Replicate */; };
+		8804FD1829C231DF00C854C9 /* Replicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8804FD1729C231DF00C854C9 /* Replicate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,7 @@
 		8804FD0929C1075900C854C9 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		8804FD0C29C1075900C854C9 /* ScribbleAI.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ScribbleAI.xcdatamodel; sourceTree = "<group>"; };
 		8804FD0E29C1075900C854C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8804FD1729C231DF00C854C9 /* Replicate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Replicate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8804FD1629C1079400C854C9 /* Replicate in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +67,7 @@
 				8804FD0E29C1075900C854C9 /* Info.plist */,
 				8804FD0B29C1075900C854C9 /* ScribbleAI.xcdatamodeld */,
 				8804FD0629C1075800C854C9 /* Preview Content */,
+				8804FD1729C231DF00C854C9 /* Replicate.swift */,
 			);
 			path = ScribbleAI;
 			sourceTree = "<group>";
@@ -91,6 +96,9 @@
 			dependencies = (
 			);
 			name = ScribbleAI;
+			packageProductDependencies = (
+				8804FD1529C1079400C854C9 /* Replicate */,
+			);
 			productName = ScribbleAI;
 			productReference = 8804FCFD29C1075800C854C9 /* ScribbleAI.app */;
 			productType = "com.apple.product-type.application";
@@ -119,6 +127,9 @@
 				Base,
 			);
 			mainGroup = 8804FCF429C1075800C854C9;
+			packageReferences = (
+				8804FD1429C1079400C854C9 /* XCRemoteSwiftPackageReference "replicate-swift" */,
+			);
 			productRefGroup = 8804FCFE29C1075800C854C9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -147,6 +158,7 @@
 			files = (
 				8804FD0A29C1075900C854C9 /* Persistence.swift in Sources */,
 				8804FD0329C1075800C854C9 /* ContentView.swift in Sources */,
+				8804FD1829C231DF00C854C9 /* Replicate.swift in Sources */,
 				8804FD0129C1075800C854C9 /* ScribbleAIApp.swift in Sources */,
 				8804FD0D29C1075900C854C9 /* ScribbleAI.xcdatamodeld in Sources */,
 			);
@@ -349,6 +361,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8804FD1429C1079400C854C9 /* XCRemoteSwiftPackageReference "replicate-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mattt/replicate-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8804FD1529C1079400C854C9 /* Replicate */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8804FD1429C1079400C854C9 /* XCRemoteSwiftPackageReference "replicate-swift" */;
+			productName = Replicate;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		8804FD0B29C1075900C854C9 /* ScribbleAI.xcdatamodeld */ = {
